@@ -2,12 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\Permiso;
-use App\Models\Empleado;
-use App\Models\Vacacion;
-use App\Models\Boleta;
-use App\Models\SolicitudVacacion;
+//use App\Models\Permiso;
 use App\Models\Persona;
+use App\Models\Cliente;
+use App\Models\PersonalApoyo;
+use App\Models\PersonalCco;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,11 +28,59 @@ Route::get('/ping', function (Request $request) {
     return 'pong';
 });
 
+Route::post('/registrar-usuario', function (Request $request) {
+    //nombres,primer_apellido,segundo_apellido,genero,ci,ci_exp,celular,direccion,correo
+    $persona = new Persona();
+    $app = $request->app;
+
+    $persona->nombres = $request->nombres;
+    $persona->primer_apellido = $request->primer_apellido;
+    $persona->segundo_apellido = $request->segundo_apellido;
+    $persona->ci=$request->ci;
+    $persona->ci_exp=$request->ci_exp;
+    $persona->genero=$request->genero;
+    $persona->celular = $request->celular;
+    $persona->direccion=$request->direccion;
+    $persona->correo=$request->correo; // validar si el correo existe
+    
+    // validar correo, nombre, primer_apellido, ci
+    $persona->save();
+
+    if($app=='cliente'){
+        $cliente = new Cliente();
+        $cliente->id=$persona->id;
+        $cliente->login=$persona->ci;
+        $cliente->pass = md5($persona->ci);
+        $cliente->save();
+    }else if($app=='cco'){
+        $personalCco = new PersonalCco();
+        $personalCco->id=$persona->id;
+        $personalCco->login=$persona->ci;
+        $personalCco->pass = md5($persona->ci);
+        $personalCco->save();
+    }else if($app=='operador'){
+        $personalApoyo = new PersonalApoyo();
+        $personalApoyo->id=$persona->id;
+        $personalApoyo->login=$persona->ci;
+        $personalApoyo->pass = md5($persona->ci);
+        $personalApoyo->save();
+    }
+
+    
+
+    $nombre_completo = "$persona->nombres $request->primer_apellido $request->segundo_apellido";
+    $respuesta =['success'=>true,'id'=>$persona->id,'login'=>$persona->ci,'nombre'=>$nombre_completo];
+    return response($respuesta, 200)->header('Content-Type', 'application/json');
+    
+});
+
+
+
 Route::post('/autentificar', function (Request $request) {
     $permiso = new Permiso();
+    $app = $request->app;
     $login = $request->login;
     $password =  md5($request->pass) ;
-    
     
     $usuario = $permiso->obtenerUsuarioEmpleado($login, $password);
     
@@ -61,7 +109,9 @@ Route::get('/empleados', function (Request $request) {
 
 Route::get('/empleados/datos', function (Request $request) {
     $empleado = new Empleado();
+    /// obtener empleado_id a partir del session_id
     $empleado_id=$request->empleado_id;
+
     if ($empleado_id) {
         $datos = $empleado->obtenerDatosEmpleado($empleado_id);
         $respuesta = [
