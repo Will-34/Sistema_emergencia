@@ -81,14 +81,23 @@ Route::post('/autentificar', function (Request $request) {
     $app = $request->app;
     $login = $request->login;
     $password =  md5($request->pass) ;
+
+    if($app=='cliente'){
+        $cliente = new Cliente();
+        $usuario = $cliente->obtenerUsuarioCliente($login, $password); // tabla cliente
+    }else if($app=='cco'){
+        $usuario = $permiso->obtenerUsuarioCco($login, $password); // tabla Cco
+    }else if($app=='operador'){
+        $usuario = $permiso->obtenerUsuarioOperado($login, $password); // tabla Operador
+    }
     
-    $usuario = $permiso->obtenerUsuarioEmpleado($login, $password);
+    
     
     if ($usuario) {
         $respuesta =['success'=>true,'id'=>$usuario->id,'login'=>$usuario->usuario,'nombre'=>$usuario->nombre_completo];
         return response($respuesta, 200)->header('Content-Type', 'application/json');
     } else {
-        $respuesta=['success'=>false,"mensaje"=>"usuario no encontrado"];
+        $respuesta=['success'=>false,"mensaje"=>"usuario de tipo $app no encontrado"];
         return response($respuesta, 200)->header('Content-Type', 'application/json');
     }
 });
