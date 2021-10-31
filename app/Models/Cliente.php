@@ -10,4 +10,9 @@ class Cliente extends Model
 {
     use HasFactory;
     protected $table="clientes";
+
+    public function obtenerUsuarioCliente($login, $password){
+        
+
+    }
 }
