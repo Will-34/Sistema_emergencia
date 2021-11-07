@@ -16,7 +16,7 @@ class PersonalCco extends Model
 		pc.login , pc.id     
         from personal_cco pc 
        inner join personas p on p.id = pc.id 
-       where pc.login =$login and pass=$password
+       where pc.login =? and pass=?
        and pc.activo =1 and pc.eliminado =0";
        $usuarios = DB::select($sql, [$login,$password]); 
        if(count($usuarios)>0){

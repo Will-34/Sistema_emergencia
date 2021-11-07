@@ -16,7 +16,7 @@ class PersonalApoyo extends Model
 		pa.login , pa.id     
         from personal_apoyo pa 
        inner join personas p on p.id = pa.id 
-       where pa.login =$login and pass=$password
+       where pa.login =? and pass=?
        and pa.activo =1 and pa.eliminado =0";
 
        $usuarios = DB::select($sql, [$login,$password]); 

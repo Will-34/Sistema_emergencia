@@ -42,24 +42,24 @@ Route::post('/registrar-usuario', function (Request $request) {
     $persona->direccion=$request->direccion;
     $persona->correo=$request->correo; // validar si el correo existe
 
-    $persona->tipo = $request->tipo;
+    $tipo=$persona->tipo = $request->tipo;
     
     // validar correo, nombre, primer_apellido, ci
     $persona->save();
 
-    if($persona->tipo=='cliente'){
+    if($tipo=='cliente'){
         $cliente = new Cliente();
         $cliente->id=$persona->id;
         $cliente->login=$persona->ci;
         $cliente->pass = md5($persona->ci);
         $cliente->save();
-    }else if($persona->tipo=='cco'){
+    }else if($tipo=='cco'){
         $personalCco = new PersonalCco();
         $personalCco->id=$persona->id;
         $personalCco->login=$persona->ci;
         $personalCco->pass = md5($persona->ci);
         $personalCco->save();
-    }else if($persona->tipo=='apoyo'){
+    }else if($tipo=='apoyo'){
         $personalApoyo = new PersonalApoyo();
         $personalApoyo->id=$persona->id;
         $personalApoyo->login=$persona->ci;
