@@ -31,8 +31,7 @@ Route::get('/ping', function (Request $request) {
 Route::post('/registrar-usuario', function (Request $request) {
     //nombres,primer_apellido,segundo_apellido,genero,ci,ci_exp,celular,direccion,correo
     $persona = new Persona();
-    $app = $request->app;
-
+    
     $persona->nombres = $request->nombres;
     $persona->primer_apellido = $request->primer_apellido;
     $persona->segundo_apellido = $request->segundo_apellido;
@@ -42,23 +41,25 @@ Route::post('/registrar-usuario', function (Request $request) {
     $persona->celular = $request->celular;
     $persona->direccion=$request->direccion;
     $persona->correo=$request->correo; // validar si el correo existe
+
+    $persona->tipo = $request->tipo;
     
     // validar correo, nombre, primer_apellido, ci
     $persona->save();
 
-    if($app=='cliente'){
+    if($persona->tipo=='cliente'){
         $cliente = new Cliente();
         $cliente->id=$persona->id;
         $cliente->login=$persona->ci;
         $cliente->pass = md5($persona->ci);
         $cliente->save();
-    }else if($app=='cco'){
+    }else if($persona->tipo=='cco'){
         $personalCco = new PersonalCco();
         $personalCco->id=$persona->id;
         $personalCco->login=$persona->ci;
         $personalCco->pass = md5($persona->ci);
         $personalCco->save();
-    }else if($app=='operador'){
+    }else if($persona->tipo=='apoyo'){
         $personalApoyo = new PersonalApoyo();
         $personalApoyo->id=$persona->id;
         $personalApoyo->login=$persona->ci;
@@ -76,8 +77,8 @@ Route::post('/registrar-usuario', function (Request $request) {
 
 
 
-Route::post('/autentificar', function (Request $request) {
-    $permiso = new Permiso();
+Route::post('/autentificar', function (Request $request) { //Revisar
+
     $app = $request->app;
     $login = $request->login;
     $password =  md5($request->pass) ;
@@ -85,10 +86,14 @@ Route::post('/autentificar', function (Request $request) {
     if($app=='cliente'){
         $cliente = new Cliente();
         $usuario = $cliente->obtenerUsuarioCliente($login, $password); // tabla cliente
+
     }else if($app=='cco'){
-        $usuario = $permiso->obtenerUsuarioCco($login, $password); // tabla Cco
-    }else if($app=='operador'){
-        $usuario = $permiso->obtenerUsuarioOperado($login, $password); // tabla Operador
+        $cco = new PersonalCco();
+        $usuario = $cco->obtenerUsuarioCco($login, $password); // tabla Cco
+
+    }else if($app=='apoyo'){
+        $apoyo = new PersonalApoyo();
+        $usuario = $apoyo->obtenerUsuarioApoyo($login, $password); // tabla Apoyo
     }
     
     
