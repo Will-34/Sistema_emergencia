@@ -81,7 +81,7 @@ Route::post('/autentificar', function (Request $request) { //Revisar
 
     $app = $request->app;
     $login = $request->login;
-    $password =  md5($request->pass) ;
+    $password =  md5($request->password) ;
 
     if($app=='cliente'){
         $cliente = new Cliente();
@@ -99,7 +99,7 @@ Route::post('/autentificar', function (Request $request) { //Revisar
     
     
     if ($usuario) {
-        $respuesta =['success'=>true,'id'=>$usuario->id,'login'=>$usuario->usuario,'nombre'=>$usuario->nombre_completo];
+        $respuesta =['success'=>true,'id'=>$usuario->id,'login'=>$usuario->login,'nombre'=>$usuario->nombre_completo];
         return response($respuesta, 200)->header('Content-Type', 'application/json');
     } else {
         $respuesta=['success'=>false,"mensaje"=>"usuario de tipo $app no encontrado"];
