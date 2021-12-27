@@ -7,6 +7,7 @@ use App\Models\Persona;
 use App\Models\Cliente;
 use App\Models\PersonalApoyo;
 use App\Models\PersonalCco;
+use App\Models\SolicitudEmergencia;
 
 
 /*
@@ -99,7 +100,7 @@ Route::post('/autentificar', function (Request $request) { //Revisar
     
     
     if ($usuario) {
-        $respuesta =['success'=>true,'id'=>$usuario->id,'login'=>$usuario->login,'nombre'=>$usuario->nombre_completo];
+        $respuesta =['success'=>true,'tipo'=>$usuario->tipo,'id'=>$usuario->id,'login'=>$usuario->login,'nombre'=>$usuario->nombre_completo];
         return response($respuesta, 200)->header('Content-Type', 'application/json');
     } else {
         $respuesta=['success'=>false,"mensaje"=>"usuario de tipo $app no encontrado"];
@@ -107,6 +108,21 @@ Route::post('/autentificar', function (Request $request) { //Revisar
     }
 });
 
+Route::post('/send/solicitud_emergencia', function (Request $request){
+    
+    $solicitud_emergencia = new SolicitudEmergencia();
+     $solicitud_emergencia-> estado= 'En revision';
+    //$solicitud_emergencia-> estado= $request->estado;
+    $solicitud_emergencia-> ubicacion= $request->ubicacion;
+    $solicitud_emergencia-> tipo_apoyo= $request->tipo_apoyo ;
+    $solicitud_emergencia-> cliente_id= $request->cliente_id ;
+  
+    $solicitud_emergencia->save();
+
+    return response("Solicitud enviada con exito", 200)->header('Content-Type', 'application/json');
+
+
+});
 
 Route::get('/empleados', function (Request $request) {
     $empleado = new Empleado();
