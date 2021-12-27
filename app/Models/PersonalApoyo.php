@@ -13,7 +13,7 @@ class PersonalApoyo extends Model
 
     public function obtenerUsuarioApoyo($login, $password){
       $sql=  " select concat(coalesce(p.primer_apellido,''),' ',coalesce(p.segundo_apellido,''),' ',p.nombres) as nombre_completo,
-		pa.login , pa.id     
+		pa.login , pa.id  , p.tipo   
         from personal_apoyo pa 
        inner join personas p on p.id = pa.id 
        where pa.login =? and pass=?

@@ -13,7 +13,7 @@ class PersonalCco extends Model
 
     public function obtenerUsuarioCco ($login , $password){
         $sql= "select concat(coalesce(p.primer_apellido,''),' ',coalesce(p.segundo_apellido,''),' ',p.nombres) as nombre_completo,
-		pc.login , pc.id     
+		pc.login , pc.id     , p.tipo
         from personal_cco pc 
        inner join personas p on p.id = pc.id 
        where pc.login =? and pass=?

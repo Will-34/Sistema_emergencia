@@ -13,7 +13,7 @@ class Cliente extends Model
 
     public function obtenerUsuarioCliente($login, $password)
     { //Hace un join entre las tablas persona y cliente por sus Id,s
-        $sql = "select concat(coalesce(p.primer_apellido,''),' ',coalesce(p.segundo_apellido,''),' ',p.nombres) as nombre_completo, c.login ,c.id       
+        $sql = "select concat(coalesce(p.primer_apellido,''),' ',coalesce(p.segundo_apellido,''),' ',p.nombres) as nombre_completo, c.login ,c.id, p.tipo       
         from clientes c 
        inner join personas p on p.id = c.id 
        where c.login =? and   c.pass=?
