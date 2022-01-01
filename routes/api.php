@@ -124,6 +124,19 @@ Route::post('/send/solicitud_emergencia', function (Request $request){
 
 });
 
+Route::get('listado/solicitud_emergencia_cco',function (Request $request){
+    $solicitud_emergencia = new SolicitudEmergencia();
+    $solicitudes = $solicitud_emergencia->listado_solicitud_emergencias ();
+    $response = [
+        'succes'=> true,
+        'solicitudes_e' =>$solicitudes
+    ];
+    
+    return response($response, 200)->header('Content-Type', 'application/json');
+});
+
+
+
 Route::get('/empleados', function (Request $request) {
     $empleado = new Empleado();
     $buscar=$request->buscar;
