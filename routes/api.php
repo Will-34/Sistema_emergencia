@@ -134,6 +134,50 @@ Route::get('listado/solicitud_emergencia_cco',function (Request $request){
     
     return response($response, 200)->header('Content-Type', 'application/json');
 });
+Route::get('listado/personal_apoyo',function (Request $request){
+    $personal_apoyo= new PersonalApoyo();
+    $listado= $personal_apoyo->listadoPersonalApoyo();
+    $response =[
+        'success' => true,
+        'listadopersonal'=>$listado
+    ];
+    return response($response, 200)->header('Content-Type', 'application/json');
+});
+Route::post('/assign_emergency_support',function(Request $request){
+
+    $solicitud_emergencia = new SolicitudEmergencia();
+     $solicitud_emergencia-> estado= 'En revision';
+    //$solicitud_emergencia-> estado= $request->estado;
+    $solicitud_emergencia-> ubicacion= $request->ubicacion;
+    $solicitud_emergencia-> tipo_apoyo= $request->tipo_apoyo ;
+    $solicitud_emergencia-> cliente_id= $request->cliente_id ;
+    
+    $solicitud_emergencia-> personal_cco_id= $request-> personal_cco_id;
+    $solicitud_emergencia-> personal_apoyo_id= $request-> personal_apoyo_id;
+  
+    $solicitud_emergencia->save();
+
+    return response("Solicitud enviada con exito", 200)->header('Content-Type', 'application/json');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

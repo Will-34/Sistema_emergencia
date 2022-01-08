@@ -27,4 +27,12 @@ class PersonalApoyo extends Model
        } 
     
     }
+    public function listadoPersonalApoyo (){
+        $sql = "select pa.id ,concat(coalesce(p.primer_apellido,''),' ',coalesce(p.segundo_apellido,''),' ' , p.nombres) as nombre_completo, pa.tipo_apoyo_id ,ta.nombre , pa.vehiculo_id ,p.celular 
+        from personal_apoyo pa 
+        inner join tipo_apoyo ta ON ta.id = pa.tipo_apoyo_id 
+        inner join personas p on p.id = pa.id ";
+        $listadopersonal = DB::select($sql);
+        return $listadopersonal;
+    }
 }
