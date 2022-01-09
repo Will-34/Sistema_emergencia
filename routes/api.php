@@ -8,7 +8,7 @@ use App\Models\Cliente;
 use App\Models\PersonalApoyo;
 use App\Models\PersonalCco;
 use App\Models\SolicitudEmergencia;
-
+use App\Models\TipoApoyo;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,6 +158,18 @@ Route::post('/assign_emergency_support',function(Request $request){
     $solicitud_emergencia->save();
 
     return response("Solicitud enviada con exito", 200)->header('Content-Type', 'application/json');
+});
+
+Route::post('/registrar_tipos_apoyo',function(Request $request){
+    $tipo = new TipoApoyo();
+    $tipo -> nombre = $request->nombre;
+    $tipo -> correo = $request->correo;
+    $tipo -> especialidad  = $request->especialidad;
+    $tipo -> grupo = $request->grupo;
+    $tipo -> cargo = $request->cargo;
+
+    $tipo->save();
+    return response("Tipos Apoyo Registrado con exito", 200)->header('Content-Type', 'application/json');
 });
 
 
