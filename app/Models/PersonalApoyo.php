@@ -35,4 +35,6 @@ class PersonalApoyo extends Model
         $listadopersonal = DB::select($sql);
         return $listadopersonal;
     }
+
+
 }

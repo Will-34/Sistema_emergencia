@@ -9,6 +9,8 @@ use App\Models\PersonalApoyo;
 use App\Models\PersonalCco;
 use App\Models\SolicitudEmergencia;
 use App\Models\TipoApoyo;
+use App\Models\Turno;
+use App\Models\Vehiculo;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,7 @@ Route::get('/ping', function (Request $request) {
     return 'pong';
 });
 
+/*Apis for the Current User xd */
 Route::post('/registrar-usuario', function (Request $request) {
     //nombres,primer_apellido,segundo_apellido,genero,ci,ci_exp,celular,direccion,correo
     $persona = new Persona();
@@ -123,7 +126,7 @@ Route::post('/send/solicitud_emergencia', function (Request $request){
 
 
 });
-
+/*Apis for CCO personal */
 Route::get('listado/solicitud_emergencia_cco',function (Request $request){
     $solicitud_emergencia = new SolicitudEmergencia();
     $solicitudes = $solicitud_emergencia->listado_solicitud_emergencias ();
@@ -170,4 +173,32 @@ Route::post('/registrar_tipos_apoyo',function(Request $request){
 
     $tipo->save();
     return response("Tipos Apoyo Registrado con exito", 200)->header('Content-Type', 'application/json');
+});
+/*Apis for Support Personal */
+Route::get ('/obtener_solicitudes_apoyo',function(Request $request){
+    $solicitudes = new SolicitudEmergencia();
+    $personal_apoyo_id = $request->personal_apoyo_id;
+    $solicitudes_fotografos = $solicitudes->solicitud_emergencias_apoyo($personal_apoyo_id);
+
+    $response = [
+        'succes'=>true,
+        'apoyo'=>$solicitudes_fotografos
+    ];
+    return response($response,200)->header('Content-Type', 'application/json');
+});
+
+Route::post('/registrar_turno_apoyo',function (Request $request){
+    $turno = new Turno();
+    $turno->nombre  = $request ->nombre;
+    $turno-> save();
+    return response("Turno agregado con exito", 200)->header('Content-Type', 'application/json');
+
+});
+Route::post('/registrar_vehiculo_apoyo',function (Request $request){
+    $vehiculo = new Vehiculo();
+    $vehiculo->nombre  = $request ->nombre;
+    $vehiculo->placa  = $request ->placa;
+    $vehiculo-> save();
+    return response("Vehiculo agregado", 200)->header('Content-Type', 'application/json');
+
 });
